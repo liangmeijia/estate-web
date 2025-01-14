@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     login() {
-      console.log(this.form.name)
       // 这是你的用户名和密码验证逻辑
       this.$axios.post(this.$httpUrl+"/login", this.form).then(res=>res.data).then(res=>{
            if(res.code === 200){

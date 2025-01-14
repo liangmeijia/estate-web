@@ -13,11 +13,24 @@
      <i class="el-icon-s-home"></i>
      <span  slot="title">首页</span>
    </el-menu-item>
+    <!-- 遍历菜单 -->
+    <template v-for="(item,i) in menuTree">
+      <!-- 一级菜单 -->
+      <el-submenu v-if="item.children && item.children.length" :key="i" :index="String(i)">
+        <template slot="title">
+          <i :class="item.menuIcon"></i>
+          <span>{{ item.menuName }}</span>
+        </template>
+        <!-- 二级菜单 -->
+        <el-menu-item v-for="(child,j) in item.children" :key="j" :index="'/' + child.menuClick">{{ child.menuName }}</el-menu-item>
+      </el-submenu>
 
-    <el-menu-item :index="'/'+item.menuClick" v-for="(item,i) in menus" :key="i">
-      <i :class="item.menuIcon"></i>
-      <span slot="title">{{item.menuName}}</span>
-    </el-menu-item>
+      <!-- 无子菜单 -->
+      <el-menu-item v-else :index="'/' + item.menuClick" :key="i">
+        <i :class="item.menuIcon"></i>
+        <span slot="title">{{ item.menuName }}</span>
+      </el-menu-item>
+    </template>
 
   </el-menu>
 </template>
@@ -40,9 +53,9 @@
       };
     },
     computed:{
-      "menus": {
+      "menuTree": {
         get(){
-          return this.$store.state.menus
+          return this.$store.state.menuTree
         }
       }
     },
