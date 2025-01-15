@@ -22,7 +22,9 @@
           <span>{{ item.menuName }}</span>
         </template>
         <!-- 二级菜单 -->
-        <el-menu-item v-for="(child,j) in item.children" :key="j" :index="'/' + child.menuClick">{{ child.menuName }}</el-menu-item>
+        <el-menu-item v-for="(child,j) in item.children" :key="j" :index="'/' + child.menuClick">
+          {{ child.menuName }}
+        </el-menu-item>
       </el-submenu>
 
       <!-- 无子菜单 -->

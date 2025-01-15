@@ -11,9 +11,10 @@ function addNewRouter(menus) {
     routes.forEach(routeItem=>{
         if(routeItem.path === "/Index"){
             menus.forEach(menu=>{
-                // if(menu.menuCode){
-                //
-                // }
+                if (menu.menuCode && menu.menuCode.startsWith('A')) {
+                    // 如果 menuCode 以 'A' 开头为下拉一级菜单不生成路由，跳过此次循环
+                    return; // continue 效果
+                }
                 let newRoute =   {
                     path: '/'+menu.menuClick,
                     name: menu.menuClick,

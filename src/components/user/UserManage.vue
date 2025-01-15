@@ -122,7 +122,7 @@
             <el-input v-model="form.age"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="性别">
+        <el-form-item label="性别" prop="sex">
           <el-col :span="20">
             <el-radio-group v-model="form.sex">
               <el-radio label="男">男</el-radio>
@@ -145,7 +145,7 @@
             <el-input v-model="form.balance"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="角色">
+        <el-form-item label="角色" prop="roleId">
           <el-col :span="20">
             <el-radio-group v-model="form.roleId">
               <el-radio label="管理员">管理员</el-radio>
@@ -153,7 +153,7 @@
             </el-radio-group>
           </el-col>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="status">
           <el-col :span="20">
             <el-radio-group v-model="form.status">
               <el-radio label="正常">正常</el-radio>
@@ -239,16 +239,10 @@ export default {
     del(id){
       this.$axios.delete(this.$httpUrl+"/user/"+id).then(res=>res.data).then(res=>{
         if(res.code === 200){
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          });
+          this.$message.success('操作成功')
           this.loadPost()
         }else {
-          this.$message({
-            message: '操作失败',
-            type: 'error'
-          });
+          this.$message.error('操作失败')
         }
       })
     },
@@ -270,7 +264,7 @@ export default {
     },
     resetForm(){
       this.$refs.form.resetFields()
-      console.log(this.form.id)
+      // console.log(this.form.id)
     },
     add(){
       this.centerDialogVisible = true
@@ -278,23 +272,16 @@ export default {
       this.$nextTick(()=>{
         this.resetForm();
       })
-
     },
     doSave(){
       this.$axios.post(this.$httpUrl+"/user",this.form).then(res=>res.data).then(res=>{
         console.log(res)
         if(res.code === 200){
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          });
+          this.$message.success('操作成功')
           this.centerDialogVisible = false
           this.loadPost()
         }else {
-          this.$message({
-            message: '操作失败',
-            type: 'error'
-          });
+          this.$message.error('操作失败')
         }
       })
     },
@@ -302,17 +289,11 @@ export default {
       this.$axios.put(this.$httpUrl+"/user",this.form).then(res=>res.data).then(res=>{
         console.log(res)
         if(res.code === 200){
-          this.$message({
-            message: '操作成功',
-            type: 'success'
-          });
+          this.$message.success('操作成功')
           this.centerDialogVisible = false
           this.loadPost()
         }else {
-          this.$message({
-            message: '操作失败',
-            type: 'error'
-          });
+          this.$message.error('操作失败')
         }
       })
     },
@@ -353,10 +334,7 @@ export default {
           this.tableData = res.data.records;
           this.total = res.data.total;
         }else {
-          this.$message({
-            message: '操作失败',
-            type: 'error'
-          });
+          this.$message.error('操作失败')
         }
 
       })
