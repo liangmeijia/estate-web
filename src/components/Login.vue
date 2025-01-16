@@ -54,7 +54,7 @@ export default {
       })
     },
     register(){
-      console.log("注册。。。。")
+      this.$router.replace('/Register')
     }
   }
 };

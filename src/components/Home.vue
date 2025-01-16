@@ -47,17 +47,15 @@
         <i class="el-icon-location-outline"></i>
         角色
       </template>
-<!--      <el-tag type= "warning" size="small">{{user.roleId}}</el-tag>-->
-      <el-tag
-          :type="user.roleId ==='管理员' ? 'warning' : 'info'"
-          disable-transitions>{{user.roleId}}</el-tag>
+      <el-tag :type="user.roleId ==='管理员' ? 'warning' : 'info'" disable-transitions>
+        {{user.roleId}}
+      </el-tag>
     </el-descriptions-item>
     <el-descriptions-item>
       <template slot="label">
         <i class="el-icon-location-outline"></i>
         状态
       </template>
-<!--      <el-tag size="small">{{user.status}}</el-tag>-->
       <el-tag
           :type="user.status ==='正常' ? 'success' : 'danger'"
           disable-transitions>{{user.status}}</el-tag>

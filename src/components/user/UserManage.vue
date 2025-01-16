@@ -24,7 +24,7 @@
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
       <el-button type="primary" style="margin-left: 5px" @click="add" v-if="user.roleId==='管理员'">新增</el-button>
-      <el-button @click="usersExport">批量导出</el-button>
+      <el-button @click="usersExport" v-if="user.roleId==='管理员'">批量导出</el-button>
       <el-upload
           class="upload-demo"
           :action= "usersImportImportUrl"
@@ -34,6 +34,7 @@
           :auto-upload="true"
           :limit="1"
           :file-list="fileList"
+          v-if="user.roleId==='管理员'"
       >
         <el-button slot="trigger">批量导入</el-button>
       </el-upload>
