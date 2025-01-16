@@ -267,10 +267,13 @@ export default {
         "amountName":this.amountName,
         "status":this.status
       }).then(res=>res.data).then(res=>{
-        console.log(res)
         if(res.code === 200){
           this.tableData = res.data.records;
           this.total = res.data.total;
+          //数据级别权限控制
+          if(this.user.roleId === '业主'){
+            this.tableData = this.tableData.filter(item => (item.userId === this.user.id));
+          }
         }else {
           this.$message.error('操作失败')
         }
@@ -295,6 +298,14 @@ export default {
           this.$message.success('操作成功')
           this.centerDialogVisible = false
           this.loadPost()
+          // 1. 从 sessionStorage 获取 user 对象
+          let user = JSON.parse(sessionStorage.getItem('cur-user')) || {};
+          // 2. 更新用户的余额
+          user.balance = Number(user.balance) - Number(row.price);
+          // 3. 将更新后的对象存回 sessionStorage
+          sessionStorage.setItem('cur-user', JSON.stringify(user));
+          // 4. 同步更新 Vue 的数据
+          this.user = user;
         }else {
           this.$message.error('操作失败 '+res.msg)
           this.loadPost()

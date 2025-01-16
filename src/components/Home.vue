@@ -65,7 +65,7 @@
     <el-descriptions-item>
       <template slot="label">
         <i class="el-icon-wallet"></i>
-        余额
+        余额(元)
       </template>
       {{user.balance}}
     </el-descriptions-item>

@@ -23,7 +23,6 @@
     <el-table :data="tableData" :header-cell-style="{background:'#f2f5fc' ,color:'#555555'}" border>
       <!-- 序号列 -->
       <el-table-column type="index" label="序号" width="80" />
-      <el-table-column prop="name" label="户主"/>
       <el-table-column prop="amount" label="充值金额(元)" />
       <el-table-column prop="date" label="充值日期" />
       <el-table-column prop="method" label="充值方式" >
@@ -40,6 +39,7 @@
               disable-transitions>{{scope.row.status}}</el-tag>
         </template>
       </el-table-column>
+      <el-table-column prop="name" label="充值人"/>
     </el-table>
     <el-pagination
         @size-change="handleSizeChange"
@@ -79,6 +79,10 @@ export default {
         if(res.code === 200){
           this.tableData = res.data.records;
           this.total = res.data.total;
+          //数据级别权限控制
+          if(this.user.roleId === '业主'){
+            this.tableData = this.tableData.filter(item => (item.userId === this.user.id));
+          }
         }else {
           this.$message.error('操作失败')
         }
