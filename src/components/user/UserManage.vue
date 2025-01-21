@@ -24,7 +24,7 @@
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
       <el-button type="primary" style="margin-left: 5px" @click="add" v-if="user.roleId==='管理员'">新增</el-button>
-      <el-button @click="usersExport" v-if="user.roleId==='管理员'">批量导出</el-button>
+      <el-button @click="usersExport" v-if="user.roleId==='管理员'" type="warning">批量导出</el-button>
       <el-upload
           class="upload-demo"
           :action= "usersImportImportUrl"
@@ -35,8 +35,9 @@
           :limit="1"
           :file-list="fileList"
           v-if="user.roleId==='管理员'"
+          style="display: inline-block; margin-left: 10px;"
       >
-        <el-button slot="trigger">批量导入</el-button>
+        <el-button slot="trigger" type="warning">批量导入</el-button>
       </el-upload>
     </div>
     <el-table :data="tableData" :header-cell-style="{background:'#f2f5fc' ,color:'#555555'}" border>
@@ -44,17 +45,15 @@
       <el-table-column type="index" label="序号" width="80" />
       <el-table-column prop="name" label="姓名" >
       </el-table-column>
-      <el-table-column prop="password" label="密码" >
+      <el-table-column prop="age" label="年龄">
       </el-table-column>
-      <el-table-column prop="age" label="年龄" width="60">
-      </el-table-column>
-      <el-table-column prop="sex" label="性别" width="60">
+      <el-table-column prop="sex" label="性别" >
       </el-table-column>
       <el-table-column prop="phone" label="电话">
       </el-table-column>
-      <el-table-column prop="email" label="邮箱" width="140">
+      <el-table-column prop="email" label="邮箱">
       </el-table-column>
-      <el-table-column prop="balance" label="余额" >
+      <el-table-column prop="balance" label="余额(元)" >
       </el-table-column>
       <el-table-column prop="roleId" label="角色" >
         <template slot-scope="scope">
@@ -63,15 +62,16 @@
               disable-transitions>{{scope.row.roleId}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" width="80">
+      <el-table-column prop="status" label="状态" >
         <template slot-scope="scope">
           <el-tag
               :type="scope.row.status ==='正常' ? 'success' : 'danger'"
               disable-transitions>{{scope.row.status}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="operate" label="操作" width="160" v-if="user.roleId==='管理员'">
+      <el-table-column prop="operate" label="操作" width="260" v-if="user.roleId==='管理员'">
         <template slot-scope="scope">
+          <el-button size="mini" @click="resetPassword(scope.row)" >重置密码</el-button>
           <el-button size="mini" @click="update(scope.row)" >编辑</el-button>
           <el-popconfirm
               confirm-button-text='好的'
@@ -111,11 +111,6 @@
         <el-form-item label="姓名" prop="name">
           <el-col :span="20">
             <el-input v-model="form.name"></el-input>
-          </el-col>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-col :span="20">
-            <el-input v-model="form.password"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="年龄" prop="age">
@@ -209,7 +204,6 @@ export default {
         id:'',
         name:'',
         email:'',
-        password:'',
         age:'',
         sex:'女',
         phone:'',
@@ -225,10 +219,6 @@ export default {
           {required: true, message: '请输入姓名', trigger: 'blur'},
           {min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur'}
         ],
-        password: [
-          {required: true, message: '请输入密码', trigger: 'blur'},
-          {min: 4, max: 8, message: '长度在 4 到 8 个字符', trigger: 'blur'}
-        ],
         phone: [
           {required: true, message: '手机号不能为空', trigger: 'blur'},
           {pattern:/^(13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9])\d{8}$/, message: '请输入正确的手机号', trigger: 'blur'}
@@ -237,6 +227,16 @@ export default {
     }
   },
   methods:{
+    resetPassword(row){
+      this.$axios.put(this.$httpUrl+"/user/"+row.id).then(res=>res.data).then(res=>{
+        if(res.code === 200){
+          this.$message.success('操作成功 '+res.msg)
+          this.loadPost()
+        }else {
+          this.$message.error('操作失败 '+res.msg)
+        }
+      })
+    },
     del(id){
       this.$axios.delete(this.$httpUrl+"/user/"+id).then(res=>res.data).then(res=>{
         if(res.code === 200){
@@ -254,7 +254,6 @@ export default {
         this.form.id = row.id
         this.form.name = row.name
         this.form.email = row.email
-        this.form.password = ''
         this.form.age = row.age
         this.form.sex = row.sex
         this.form.phone = row.phone

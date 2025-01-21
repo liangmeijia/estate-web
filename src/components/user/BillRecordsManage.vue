@@ -122,15 +122,12 @@ export default {
         "startTime":this.startTime,
         "endTime":this.endTime,
         "status":this.status,
+        "curUserId":this.user.id
       }).then(res=>res.data).then(res=>{
         console.log(res)
         if(res.code === 200){
           this.tableData = res.data.records;
           this.total = res.data.total;
-          //数据级别权限控制
-          if(this.user.roleId === '业主'){
-            this.tableData = this.tableData.filter(item => (item.userId === this.user.id));
-          }
         }else {
           this.$message.error('操作失败')
         }

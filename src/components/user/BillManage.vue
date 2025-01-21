@@ -265,15 +265,12 @@ export default {
         "unit":this.unit,
         "number":this.number,
         "amountName":this.amountName,
-        "status":this.status
+        "status":this.status,
+        "curUserId":this.user.id
       }).then(res=>res.data).then(res=>{
         if(res.code === 200){
           this.tableData = res.data.records;
           this.total = res.data.total;
-          //数据级别权限控制
-          if(this.user.roleId === '业主'){
-            this.tableData = this.tableData.filter(item => (item.userId === this.user.id));
-          }
         }else {
           this.$message.error('操作失败')
         }
@@ -338,6 +335,10 @@ export default {
       })
     },
     update(row){
+      if(row.status !== '待缴费'){
+        this.$message.error(row.status+' 无法修改')
+        return
+      }
       this.centerDialogVisible = true
       this.dialogTitle = '修改账单'
       this.$nextTick(()=>{
