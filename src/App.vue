@@ -17,7 +17,7 @@ export default {
   watch:{
     '$store.state.menus':{
       handler(val,old){
-        console.log(val,old)
+        //console.log(val,old)
         if(!old && this.user && this.user.id){
           this.$store.commit('setRouter',val)
         }

@@ -138,7 +138,7 @@
         </el-form-item>
         <el-form-item label="余额" prop="balance">
           <el-col :span="20">
-            <el-input v-model="form.balance"></el-input>
+            <el-input v-model="form.balance" disabled></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="角色" prop="roleId">
@@ -386,35 +386,10 @@ export default {
         },
         responseType: 'blob', // 设置响应类型为 blob
       }).then(res=>{
-        // 提取文件名（后端通常会在 Content-Disposition 头中返回）
-        const disposition = res.headers['content-disposition'];
-        const fileName = disposition ? decodeURIComponent(disposition.split(';')[1].split('filename=')[1].replace(/"/g, '')) : '用户信息.xlsx';
-        // 创建 Blob 对象
-        const blob = new Blob([res.data]);
-
-        // 创建下载链接
-        const downloadUrl = URL.createObjectURL(blob);
-
-        // 创建 a 标签并触发下载
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-
-        // 清理临时链接和元素
-        document.body.removeChild(link);
-        URL.revokeObjectURL(downloadUrl);
-        //
-        this.$message({
-          message: '批量导出成功',
-          type: 'success'
-        });
+        this.createA(res);
+        this.$message.success("批量导出成功");
       }).catch((error) => {
-          this.$message({
-            message: '批量导出失败',
-            type: 'error'
-          });
+          this.$message.error("批量导出失败");
           console.error('批量导出失败:', error);
         });
 
@@ -428,7 +403,29 @@ export default {
       console.log(`当前页: ${val}`)
       this.pageNum=val
       this.loadPost()
-    }
+    },
+    createA(res){
+      // 提取文件名（后端通常会在 Content-Disposition 头中返回）
+      const disposition = res.headers['content-disposition'];
+      const fileName = disposition ? decodeURIComponent(disposition.split(';')[1].split('filename=')[1].replace(/"/g, '')) : '默认.xlsx';
+      // 创建 Blob 对象
+      const blob = new Blob([res.data]);
+      // 创建下载链接
+      const downloadUrl = URL.createObjectURL(blob);
+
+      // 创建一个隐藏的 a 标签
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = fileName; // 设置下载的文件名
+
+      // 触发点击事件
+      document.body.appendChild(link);
+      link.click();
+
+      // 移除 a 标签
+      document.body.removeChild(link);
+      URL.revokeObjectURL(downloadUrl);
+    },
 
   },
   beforeMount() {

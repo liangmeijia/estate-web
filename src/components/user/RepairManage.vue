@@ -28,7 +28,7 @@
 
       <el-button type="primary" style="margin-left: 5px" @click="loadPost">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
-      <el-button type="primary" style="margin-left: 5px" @click="add" v-if="user.roleId==='管理员'">维修申请</el-button>
+      <el-button type="primary" style="margin-left: 5px" @click="add">维修申请</el-button>
     </div>
 
     <el-table :data="tableData" :header-cell-style="{background:'#f2f5fc' ,color:'#555555'}" border>
@@ -49,9 +49,10 @@
       </el-table-column>
       <el-table-column prop="reason" label="申请事由" width="180"/>
 
-      <el-table-column prop="operate" label="操作" width="260" >
+      <el-table-column prop="operate" label="操作" width="460" >
         <template slot-scope="scope">
           <el-button type="warning" size="mini" @click="processRepair(scope.row)" v-if="user.roleId==='管理员'">去处理</el-button>
+          <el-button size="mini" @click="detail(scope.row.id)" >详情</el-button>
           <el-button size="mini" @click="update(scope.row)" >编辑</el-button>
           <el-popconfirm
               confirm-button-text='好的'
@@ -60,7 +61,7 @@
               icon-color="red"
               title="确定删除吗？"
               style="margin-left: 5px"
-              @confirm="del(scope.row.id)"
+              @confirm="del(scope.row)"
           >
             <el-button size="mini" type="danger" slot="reference" v-if="user.roleId==='管理员'">删除</el-button>
           </el-popconfirm>
@@ -90,7 +91,7 @@
         </el-form-item>
         <el-form-item label="申请人">
           <el-col :span="20">
-            <el-input disabled v-model="this.user.name"></el-input>
+            <el-input disabled v-model="form.applicantName"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="地址" prop="address">
@@ -126,6 +127,47 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="centerDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="saveOrUpdate">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog
+        title="维修申请处理"
+        :visible.sync="processRepairDialogVisible"
+        width="30%"
+        center>
+      <el-form ref="processRepairForm" :rules="processRepairRules" :model="processRepairForm" label-width="120px">
+        <el-form-item label="ID" prop="id" style="display: none;">
+          <el-col :span="20">
+            <el-input v-model="processRepairForm.id"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="维修费用" prop="price">
+          <el-col :span="20">
+            <el-input v-model="processRepairForm.price"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="维修开始日期" prop="startTime">
+          <el-date-picker
+              v-model="processRepairForm.startTime"
+              type="datetime"
+              placeholder="选择日期时间"
+              :format="'yyyy-MM-dd HH:mm:ss'"
+              :value-format="'yyyy-MM-dd HH:mm:ss'">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="维修截至日期" prop="endTime">
+          <el-date-picker
+              v-model="processRepairForm.endTime"
+              type="datetime"
+              placeholder="选择日期时间"
+              :format="'yyyy-MM-dd HH:mm:ss'"
+              :value-format="'yyyy-MM-dd HH:mm:ss'">
+          </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="processRepairDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="doProcessRepair">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -167,7 +209,15 @@ export default {
         unit:'',
         number:'',
         reason:'',
-        applicantId : user.id
+        applicantId : user.id,
+        applicantName:user.name
+      },
+      processRepairDialogVisible:false,
+      processRepairForm:{
+        id:'',
+        price:'',
+        startTime:'',
+        endTime:''
       },
       rules: {
         address: [
@@ -186,7 +236,17 @@ export default {
           {required: true, message: '申请事由不能为空', trigger: 'blur'}
         ],
       },
-
+      processRepairRules:{
+        price: [
+          {required: true, message: '维修费用不能为空', trigger: 'blur'}
+        ],
+        startTime: [
+          {required: true, message: '请输入维修开始日期', trigger: 'blur'}
+        ],
+        endTime: [
+          {required: true, message: '请输入维修截至日期', trigger: 'blur'}
+        ],
+      },
     }
   },
   methods: {
@@ -267,8 +327,12 @@ export default {
         this.resetForm();
       })
     },
-    del(id){
-      this.$axios.delete(this.$httpUrl+"/repair/"+id).then(res=>res.data).then(res=>{
+    del(row){
+      if(row.status === '维修中'){
+        this.$message.error(row.status+' 无法删除')
+        return
+      }
+      this.$axios.delete(this.$httpUrl+"/repair/"+row.id).then(res=>res.data).then(res=>{
         if(res.code === 200){
           this.$message.success('操作成功')
           this.loadPost()
@@ -279,7 +343,7 @@ export default {
     },
     update(row){
       if(row.status !== '待维修'){
-        this.$message.error('无法修改')
+        this.$message.error(row.status+' 无法修改')
         return
       }
       this.centerDialogVisible = true
@@ -293,8 +357,32 @@ export default {
         this.form.reason = row.reason
       })
     },
+    detail(id){
+      this.$store.commit('setSelectedUserId',id);
+      this.$router.replace('/RepairDetail')
+    },
     processRepair(row){
-      console.log(row)
+      if(row.status !== '待维修'){
+        this.$message.error(row.status+' 无法处理')
+        return
+      }
+      this.processRepairDialogVisible=true
+      this.$nextTick(()=>{
+        this.$refs.processRepairForm.resetFields();
+      })
+      this.processRepairForm.id = row.id
+    },
+    doProcessRepair(){
+      this.$axios.put(this.$httpUrl+"/repair/process",this.processRepairForm).then(res=>res.data).then(res=>{
+        console.log(res)
+        if(res.code === 200){
+          this.$message.success('操作成功')
+          this.processRepairDialogVisible = false
+          this.loadPost()
+        }else {
+          this.$message.error('操作失败')
+        }
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)

@@ -63,7 +63,7 @@
               icon-color="red"
               title="确定删除吗？"
               style="margin-left: 5px"
-              @confirm="del(scope.row.id)"
+              @confirm="del(scope.row)"
               v-if="user.roleId==='管理员'"
           >
             <el-button size="mini" type="danger" slot="reference" >删除</el-button>
@@ -95,32 +95,32 @@
         </el-form-item>
         <el-form-item label="地址" prop="address">
           <el-col :span="20">
-            <el-input v-model="form.address"></el-input>
+            <el-input v-model="form.address" :disabled="form.amountName === '维修费用'"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="栋" prop="building">
           <el-col :span="20">
-            <el-input v-model="form.building"></el-input>
+            <el-input v-model="form.building" :disabled="form.amountName === '维修费用'"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="单元" prop="unit">
           <el-col :span="20">
-            <el-input v-model="form.unit"></el-input>
+            <el-input v-model="form.unit" :disabled="form.amountName === '维修费用'"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="门牌号" prop="number">
           <el-col :span="20">
-            <el-input v-model="form.number"></el-input>
+            <el-input v-model="form.number" :disabled="form.amountName === '维修费用'"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="费用名称" prop="amountName">
           <el-col :span="20">
-            <el-input v-model="form.amountName"></el-input>
+            <el-input v-model="form.amountName" :disabled="form.amountName === '维修费用'"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="价格" prop="price">
           <el-col :span="20">
-            <el-input v-model="form.price"></el-input>
+            <el-input v-model="form.price" :disabled="form.amountName === '维修费用'"></el-input>
           </el-col>
         </el-form-item>
         <el-form-item label="费用详情" prop="costDetails">
@@ -128,13 +128,14 @@
             <el-input
                 type="textarea"
                 v-model="form.costDetails"
-                placeholder="请输入内容">
+                placeholder="请输入内容"
+                :disabled="form.amountName === '维修费用'">
             </el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="状态" prop="status" >
           <el-col :span="20">
-            <el-radio-group v-model="form.status">
+            <el-radio-group v-model="form.status" disabled>
               <el-radio label="待缴费">待缴费</el-radio>
               <el-radio label="缴费成功">缴费成功</el-radio>
               <el-radio label="缴费失败">缴费失败</el-radio>
@@ -335,7 +336,7 @@ export default {
       })
     },
     update(row){
-      if(row.status !== '待缴费'){
+      if(row.status === '缴费成功'){
         this.$message.error(row.status+' 无法修改')
         return
       }
@@ -406,8 +407,12 @@ export default {
         }
       });
     },
-    del(id){
-      this.$axios.delete(this.$httpUrl+"/bill/"+id).then(res=>res.data).then(res=>{
+    del(row){
+      if(row.status !== '缴费成功'){
+        this.$message.error(row.status+' 无法删除')
+        return
+      }
+      this.$axios.delete(this.$httpUrl+"/bill/"+row.id).then(res=>res.data).then(res=>{
         if(res.code === 200){
           this.$message.success('操作成功')
           this.loadPost()

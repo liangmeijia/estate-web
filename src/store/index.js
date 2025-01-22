@@ -86,26 +86,11 @@ function buildMenuTree(menus) {
     return menuTree;
 }
 
-/**
- * 创建路由
- * @param {Object} menu 菜单对象
- * @returns {Object} 路由对象
- */
-// function createRoute(menu) {
-//     return {
-//         path: "/" + menu.menuClick,
-//         name: menu.menuClick,
-//         meta: {
-//             title: menu.menuName,
-//         },
-//         component: () => import("../components/" + menu.menuComponent),
-//         children: menu.children.map(child => createRoute(child)) // 递归生成子路由
-//     };
-// }
 const store = new Vuex.Store({
     state: {
         menus: [],
-        menuTree:[]
+        menuTree:[],
+        selectedUserId: null
     },
     mutations: {
         setMenu(state,menus) {
@@ -116,6 +101,10 @@ const store = new Vuex.Store({
         setRouter(state,menus) {
             //添加动态路由
             addNewRouter(menus);
+        },
+        setSelectedUserId(state, id) {
+            //保存选择的用户id,用于用户详情查看
+            state.selectedUserId = id;
         }
     },
     getters: {
@@ -124,6 +113,9 @@ const store = new Vuex.Store({
         },
         getMenuTree(state){
             return state.menuTree;
+        },
+        getSelectedUserId(state){
+            return state.selectedUserId;
         }
     },
     plugins:[createPersistedState()]

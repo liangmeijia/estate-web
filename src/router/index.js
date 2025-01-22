@@ -25,7 +25,12 @@ const routes=[
                     title:'首页'
                 },
                 component:()=>import('../components/Home')
-            }
+            },
+            {
+                path:'/RepairDetail',
+                name:'repairDetail',
+                component:()=>import('../components/user/RepairDetailManage')
+            },
         ]
     }
 ]
