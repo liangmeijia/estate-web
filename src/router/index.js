@@ -17,6 +17,7 @@ const routes=[
         path:'/Index',
         name:'index',
         component:()=>import('../components/Index'),
+        redirect:'/Home',
         children:[
             {
                 path:'/Home',
@@ -24,7 +25,7 @@ const routes=[
                 meta:{
                     title:'首页'
                 },
-                component:()=>import('../components/Home')
+                component:()=>import('../components/Home'),
             },
             {
                 path:'/RepairDetail',
