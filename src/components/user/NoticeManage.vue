@@ -26,7 +26,13 @@
     <el-table :data="tableData" :header-cell-style="{background:'#f2f5fc' ,color:'#555555'}" border>
       <el-table-column type="index" label="序号" width="80" />
       <el-table-column prop="title" label="公告标题"/>
-      <el-table-column prop="status" label="状态"/>
+      <el-table-column prop="status" label="状态" >
+        <template slot-scope="scope">
+          <el-tag
+              :type="scope.row.status ==='未读' ? 'info' : 'success'"
+              disable-transitions>{{scope.row.status}}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="createTime" label="发布时间"/>
       <el-table-column prop="operate" label="操作" width="260">
         <template slot-scope="scope">
@@ -169,6 +175,9 @@ export default {
     },
     detail(id){
       console.log(id)
+      this.$store.commit('setSelectedUserId',this.user.id);
+      this.$store.commit('setSelectedNoticeId',id);
+      this.$router.replace('/NoticeDetail')
     },
     del(id){
       this.$axios.delete(this.$httpUrl+"/notice/"+id).then(res=>res.data).then(res=>{

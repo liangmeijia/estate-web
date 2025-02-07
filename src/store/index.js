@@ -90,7 +90,8 @@ const store = new Vuex.Store({
     state: {
         menus: [],
         menuTree:[],
-        selectedUserId: null
+        selectedUserId: null,
+        selectedNoticeId:null,
     },
     mutations: {
         setMenu(state,menus) {
@@ -105,6 +106,10 @@ const store = new Vuex.Store({
         setSelectedUserId(state, id) {
             //保存选择的用户id,用于用户详情查看
             state.selectedUserId = id;
+        },
+        setSelectedNoticeId(state, id) {
+            //保存选择的公告id,用于公告详情查看
+            state.selectedNoticeId = id;
         }
     },
     getters: {
@@ -116,6 +121,9 @@ const store = new Vuex.Store({
         },
         getSelectedUserId(state){
             return state.selectedUserId;
+        },
+        getSelectedNoticeId(state){
+            return state.selectedNoticeId;
         }
     },
     plugins:[createPersistedState()]

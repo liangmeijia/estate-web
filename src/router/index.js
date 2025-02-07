@@ -32,6 +32,11 @@ const routes=[
                 name:'repairDetail',
                 component:()=>import('../components/user/RepairDetailManage')
             },
+            {
+                path:'/NoticeDetail',
+                name:'noticeDetail',
+                component:()=>import('../components/user/NoticeDetailManage')
+            },
         ]
     }
 ]

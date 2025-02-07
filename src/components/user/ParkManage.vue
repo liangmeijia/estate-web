@@ -264,7 +264,7 @@ export default {
           this.centerDialogVisible = false
           this.loadPost()
         }else {
-          this.$message.error('操作失败')
+          this.$message.error('操作失败，'+res.msg)
         }
       })
     },
@@ -275,7 +275,7 @@ export default {
           this.centerDialogVisible = false
           this.loadPost()
         }else {
-          this.$message.error('操作失败')
+          this.$message.error('操作失败，'+res.msg)
         }
       })
     },
