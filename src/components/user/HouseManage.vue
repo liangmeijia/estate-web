@@ -1,7 +1,7 @@
 <template>
   <div style="margin-left: 5px; margin-top: 5px">
     <div style="margin-bottom:5px;">
-      <el-input v-model='address' placeholder="地址" style="width: 200px"
+      <el-input v-model='address' placeholder="小区" style="width: 200px"
                 suffix-icon="el-icon-search"
                 @keyup.enter.native="loadPost">
       </el-input>
@@ -23,7 +23,7 @@
     </div>
     <el-table :data="tableData" :header-cell-style="{background:'#f2f5fc' ,color:'#555555'}" border>
       <el-table-column type="index" label="序号" width="80" />
-      <el-table-column prop="address" label="地址" />
+      <el-table-column prop="address" label="小区" />
       <el-table-column prop="building" label="栋"/>
       <el-table-column prop="unit" label="单元"/>
       <el-table-column prop="number" label="门牌号"/>
@@ -68,7 +68,7 @@
             <el-input v-model="form.id"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="地址" prop="address">
+        <el-form-item label="小区" prop="address">
           <el-col :span="20">
             <el-input v-model="form.address"></el-input>
           </el-col>
@@ -141,7 +141,7 @@ export default {
       },
       rules: {
         address: [
-          {required: true, message: '请输入地址', trigger: 'blur'},
+          {required: true, message: '请输入小区', trigger: 'blur'},
           {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
         ],
         building: [

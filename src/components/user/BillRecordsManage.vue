@@ -1,7 +1,7 @@
 <template>
   <div style="margin-left: 5px; margin-top: 5px">
     <div style="margin-bottom:5px;">
-      <el-input v-model='address' placeholder="地址" style="width: 200px"
+      <el-input v-model='address' placeholder="小区" style="width: 200px"
                 suffix-icon="el-icon-search"
                 @keyup.enter.native="loadPost">
       </el-input>
@@ -52,7 +52,7 @@
     <el-table :data="tableData" :header-cell-style="{background:'#f2f5fc' ,color:'#555555'}" border>
       <!-- 序号列 -->
       <el-table-column type="index" label="序号" width="80" />
-      <el-table-column prop="address" label="地址" width="200"/>
+      <el-table-column prop="address" label="小区" width="200"/>
       <el-table-column prop="building" label="栋" width="80"/>
       <el-table-column prop="unit" label="单元" width="80"/>
       <el-table-column prop="number" label="门牌号" width="80"/>

@@ -76,7 +76,7 @@ export default {
 .login-box {
   width: 400px;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.9); /* 半透明白色背景 */
+  background: rgba(255, 255, 255, 0.6); /* 半透明白色背景 */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   text-align: center;

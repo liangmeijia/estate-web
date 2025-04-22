@@ -36,7 +36,7 @@
       <el-table-column type="index" label="序号" width="80" />
       <el-table-column prop="applicantName" label="申请人姓名" />
       <el-table-column prop="applicantPhone" label="申请人电话"/>
-      <el-table-column prop="address" label="地址"/>
+      <el-table-column prop="address" label="小区"/>
       <el-table-column prop="building" label="栋"/>
       <el-table-column prop="unit" label="单元" />
       <el-table-column prop="number" label="门牌号"/>
@@ -94,7 +94,7 @@
             <el-input disabled v-model="form.applicantName"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="地址" prop="address">
+        <el-form-item label="小区" prop="address">
           <el-col :span="20">
             <el-input v-model="form.address"></el-input>
           </el-col>
@@ -221,7 +221,7 @@ export default {
       },
       rules: {
         address: [
-          {required: true, message: '地址不能为空', trigger: 'blur'}
+          {required: true, message: '小区不能为空', trigger: 'blur'}
         ],
         building: [
           {required: true, message: '请输入栋', trigger: 'blur'}

@@ -18,7 +18,7 @@
     </el-descriptions-item>
     <el-descriptions-item>
       <template slot="label">
-        地址
+        小区
       </template>
       {{repairDetail.address}}
     </el-descriptions-item>

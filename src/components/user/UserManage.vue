@@ -71,7 +71,17 @@
       </el-table-column>
       <el-table-column prop="operate" label="操作" width="260" v-if="user.roleId==='管理员'">
         <template slot-scope="scope">
-          <el-button size="mini" @click="resetPassword(scope.row)" >重置密码</el-button>
+          <el-popconfirm
+              confirm-button-text='好的'
+              cancel-button-text='不用了'
+              icon="el-icon-info"
+              icon-color="red"
+              title="确定重置密码吗？"
+              style="margin-right: 5px"
+              @confirm="resetPassword(scope.row)"
+          >
+            <el-button size="mini" slot="reference" >重置密码</el-button>
+          </el-popconfirm>
           <el-button size="mini" @click="update(scope.row)" >编辑</el-button>
           <el-popconfirm
               confirm-button-text='好的'
@@ -163,7 +173,6 @@
         <el-button type="primary" @click="saveOrUpdate">确 定</el-button>
       </span>
     </el-dialog>
-
   </div>
 
 </template>
